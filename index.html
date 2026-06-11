@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Happy Birthday Kuchupuchu</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/surprise.css">
+<link rel="stylesheet" href="css/photo-wall.css">
+<link rel="stylesheet" href="css/sketch-portrait.css">
+<link rel="stylesheet" href="css/wishes.css">
+</head>
+<body class="intro-active">
+
+<div id="overlay">
+ <div class="intro-fx" id="introFx" aria-hidden="true"></div>
+ <div class="card intro-card">
+   <h1>Happy Birthday Kuchupuchu 🎂</h1>
+   <p class="intro-lead">Today is not just your birthday. It is my favorite festival of the year, because you were born and somehow landed in my life 🤧❤️</p>
+   <div class="intro-sticker-wrap" id="introStickerWrap" aria-hidden="true">
+     <img src="assets/birthday-sticker.png" alt="Birthday bears sticker" class="intro-sticker" id="introSticker">
+   </div>
+   <p class="intro-question" id="introQuestion">Are you excited for what's next?</p>
+   <div class="intro-actions" id="introActions">
+     <button id="yesBtn" class="intro-btn intro-btn-yes" type="button">Yes</button>
+     <button id="noBtn" class="intro-btn intro-btn-no" type="button">No</button>
+   </div>
+ </div>
+</div>
+
+<audio id="bgMusic" loop preload="auto" playsinline src="assets/bg-music.mp3?v=2"></audio>
+
+<div id="bg"></div>
+<div id="balloons"></div>
+<div id="sparkles"></div>
+
+<div class="page-shell">
+ <section id="stage1" class="stage">
+   <div class="stage-intro">
+    <p class="eyebrow">Cake Time 🎂</p>
+    <h1>Before we continue, madam ji...</h1>
+    <p class="stage-copy">Birthday girl ko cake cut karna padega 🤧 Hold the knife, make one smooth cut, and unlock the first surprise I made for you 😘</p>
+    <div class="hero-stats">
+      <div class="stage-pop-block"><strong>24</strong><span>Years of being cute and dangerous 🤧😍</span></div>
+      <div class="stage-pop-block"><strong>3</strong><span>Trips I still replay in my head 😘</span></div>
+      <div class="stage-pop-block"><strong>∞</strong><span>Moments where you made me smile 😂</span></div>
+    </div>
+   </div>
+    <div class="cake-stage stage-pop-block">
+     <div class="cake-hint">Hold the knife and make one smooth cut across the cake, Motiiiiiiii 😂</div>
+     <div class="cake-zone" id="cakeContainer"></div>
+     <button id="cakeNextBtn" class="primary-btn disabled" disabled>Open My First Surprise 😘</button>
+   </div>
+ </section>
+
+ <section id="stage2" class="stage">
+   <div class="stage-intro">
+    <p class="eyebrow">Birthday Booklet 🤧</p>
+    <h2>A small book for the girl I can never explain fully 🤧😍</h2>
+    <p class="stage-copy">Every page is about you, Komal. Your strength, your cuteness, your drama, your smile, and all the little things that made me fall for you again and again 😘</p>
+   </div>
+   <div class="flipbook stage-pop-block" id="flipbook">
+    <div class="flipbook-stage">
+      <div class="flipbook-shadow"></div>
+      <div class="flipbook-object" id="flipbookObject">
+        <button type="button" class="flipbook-cover booklet-theme-love" id="flipbookCover">
+          <span class="flipbook-cover-tag">Birthday Booklet 🤧</span>
+          <strong>For Kuchupuchu</strong>
+          <em>Made with too much love</em>
+          <span class="flipbook-cover-cta">Click to open 📖</span>
+        </button>
+        <div class="flipbook-open" id="flipbookOpen">
+          <div class="flipbook-spread">
+            <div class="flipbook-page flipbook-page-left" id="flipbookLeft"></div>
+            <div class="flipbook-spiral" aria-hidden="true">
+              <div class="spiral-coil"></div>
+            </div>
+            <div class="flipbook-page flipbook-page-right">
+              <div class="flipbook-under" id="flipbookUnder"></div>
+              <div class="flipbook-sheet" id="flipbookSheet">
+                <div class="flipbook-face flipbook-face-front" id="flipbookFaceFront"></div>
+                <div class="flipbook-face flipbook-face-back page-paper-back" id="flipbookFaceBack"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="flipbook-help" id="flipbookHelp">Click the cover to open your book 🤧</p>
+    <div class="flipbook-footer">
+      <button type="button" class="flipbook-arrow" id="bookPrevBtn" aria-label="Previous page" disabled>‹</button>
+      <span class="flipbook-counter" id="flipbookCounter">Cover</span>
+      <button type="button" class="flipbook-arrow" id="bookForwardBtn" aria-label="Next page" disabled>›</button>
+    </div>
+   </div>
+   <div class="flipbook-pages-source" hidden aria-hidden="true">
+    <article class="book-page booklet-theme-love" data-page="welcome">
+      <h3>Welcome Kuchupuchu 🤧❤️</h3>
+      <p>This little book is only for you. Every page is a piece of my heart, my memories, and all the reasons you mean everything to me 😘</p>
+      <p class="book-page-note">Turn the page when you are ready, Motiiiiiiii 🤧</p>
+    </article>
+    <article class="book-page booklet-theme-admire" data-page="admire">
+      <h3>🎈 Things I admire about you 🤧😍</h3>
+      <ul>
+        <li>You are so strong, baby. Living alone and still handling everything is not easy 🤧</li>
+        <li>Your loyalty is genuinely my favorite thing about you 🤧❤️</li>
+        <li>You understand my feelings even when I act like a complete fool 😂</li>
+        <li>You work hard for the things you want, and that confidence looks so beautiful on you 🤧😍</li>
+        <li>Your playful, dramatic, overactive energy makes my boring life fun 😂</li>
+      </ul>
+    </article>
+    <article class="book-page booklet-theme-unique" data-page="unique">
+      <h3>🎈 Things that make you unique 😘</h3>
+      <ul>
+        <li>Your imagination, your drawings, your painting side, your whole creative brain 🤧😍</li>
+        <li>Your love for talking. Sach me, I never get bored of listening to you 😘</li>
+        <li>You can turn even one random call into a full story 😂</li>
+        <li>You are strong outside and soft inside, and that combination is rare 🤧</li>
+        <li>Your pink energy, K-drama heart, and thriller-show curiosity are fully you 😂</li>
+      </ul>
+    </article>
+    <article class="book-page booklet-theme-funny" data-page="funny">
+      <h3>🎈 Your funniest moments 😂</h3>
+      <ul>
+        <li>That call where we laughed so hard on random things that stopping felt impossible 😂</li>
+        <li>Pani puri and Pandit pav bhaji. Iconic. Historic. Never deleting this memory 😂</li>
+        <li>The first kiss under your house getting captured like a full movie scene 😂😘</li>
+        <li>Our inside jokes, your teasing, and then jo mere saath hota hai uske baad 😂</li>
+      </ul>
+    </article>
+    <article class="book-page booklet-theme-strength" data-page="strength">
+      <h3>🎈 Why you are the strongest girl I know 🤧</h3>
+      <ul>
+        <li>You take care of yourself alone, and baby that is one of the hardest things 🤧</li>
+        <li>You explain things to me even when I ask the same thing 10 times 😂🤧</li>
+        <li>You still chase your dreams even when life feels heavy 🤧</li>
+        <li>You are honest even when honesty is not easy 🤧</li>
+        <li>You have a beautiful heart and a very intelligent mind 🤧😍</li>
+      </ul>
+    </article>
+    <article class="book-page booklet-theme-growth" data-page="growth">
+      <h3>🎈 Things you achieved this year 🤧</h3>
+      <ul>
+        <li>You handled life independently, even when it was not easy 🤧</li>
+        <li>You kept becoming more confident, more skilled, and more you 🤧😍</li>
+        <li>You stayed cheerful even when things were difficult 🤧</li>
+        <li>You proved again that you are genuinely the strongest girl I know 🤧</li>
+      </ul>
+    </article>
+    <article class="book-page booklet-theme-warmth" data-page="warmth">
+      <h3>🎈 Why people love being around you 😂😘</h3>
+      <ul>
+        <li>Your laugh makes everything lighter 😂</li>
+        <li>You talk to people with warmth, and it shows 😘</li>
+        <li>You care deeply, even when you pretend to be dramatic 😂🤧</li>
+        <li>Your chatter can light up a whole room, and my whole day too 😘</li>
+        <li>You make simple moments feel like memories 🤧</li>
+      </ul>
+    </article>
+    <article class="book-page booklet-theme-hope" data-page="hope">
+      <h3>🎈 What I hope for you this year 🤧❤️</h3>
+      <ul>
+        <li>I hope you laugh a lot, cry less, and feel loved every single day 🤧</li>
+        <li>I hope you get the trips, calm, and happiness you keep dreaming about 😘</li>
+        <li>I hope your hard work gives you big wins 🤧😍</li>
+        <li>I hope we make more memories where time stops again 😘</li>
+      </ul>
+    </article>
+    <article class="book-page booklet-theme-love booklet-final" data-page="final">
+      <h3>Last page 🤧</h3>
+      <p>Words are cute, but honestly they still fall short...</p>
+      <p class="final-quote">Because your smile, your fragrance, your presence... they feel like home to me 😘</p>
+      <p class="book-page-note">Words aren't enough. Your next surprise awaits 🤧</p>
+    </article>
+   </div>
+   <button id="bookletNextBtn" class="primary-btn flipbook-next-stage" disabled hidden>Continue to Your Surprise 🤧</button>
+ </section>
+
+ <section id="stage3" class="stage stage-surprise">
+   <div class="surprise-stage" id="surpriseStage">
+     <p class="surprise-hint" id="surpriseHint">Pop the balloons to reveal the message 🤧</p>
+     <div class="surprise-play-area" id="surprisePlayArea">
+       <div class="word-balloon-board" id="wordBalloonBoard">
+         <div class="word-balloon-row" id="wordBalloonRowTop"></div>
+         <div class="word-balloon-row" id="wordBalloonRowBottom"></div>
+       </div>
+       <div class="sentence-zone" id="wordBalloonMiddle">
+         <div class="sentence-assembled" id="revealedSentence" hidden>
+           <p class="sentence-line sentence-line-top">
+             <span class="assembled-word" data-word="You">You</span>
+             <span class="assembled-word" data-word="are">are</span>
+             <span class="assembled-word" data-word="so">so</span>
+           </p>
+           <p class="sentence-line sentence-line-bottom">
+             <span class="assembled-word assembled-word-special" data-word="Special">
+               <span class="special-hearts" id="specialHearts" aria-hidden="true"></span>
+               <span class="special-text">Special</span>
+             </span>
+           </p>
+         </div>
+         <button type="button" id="surpriseGetBtn" class="primary-btn surprise-get-btn" hidden disabled>Ready for Your Surprise 🤧</button>
+         <div class="surprise-message-zone" id="surpriseMessageZone" hidden>
+           <p class="surprise-type-line surprise-type-line-1 typing-pending" id="surpriseLine1" data-typewriter-text="A Bouquet for the Most beautiful Girl."></p>
+           <p class="surprise-type-line surprise-type-line-2 typing-pending" id="surpriseLine2" data-typewriter-text="Happy Birthday To You Gorgeous 🤧💝"></p>
+         </div>
+       </div>
+     </div>
+     <div class="bouquet-scene" id="bouquetScene" hidden>
+       <div class="surprise-confetti" id="surpriseConfetti" aria-hidden="true"></div>
+       <div class="heart-balloons-left" id="heartBalloonsLeft"></div>
+       <div class="surprise-bouquet-wrap">
+         <img src="assets/bouquet.png" alt="Flower bouquet for you" class="surprise-bouquet">
+       </div>
+       <div class="heart-balloons-right" id="heartBalloonsRight"></div>
+     </div>
+     <button id="surpriseNextBtn" class="primary-btn surprise-next-btn" hidden disabled>See the Photo Wall 🤧</button>
+   </div>
+ </section>
+
+ <section id="stage4" class="stage stage-photo-wall">
+   <div class="stage-intro">
+     <p class="eyebrow">Photo Wall 📌</p>
+     <h2>Every version of you, pinned with love 🤧😍</h2>
+     <p class="stage-copy">Cutiepie, Hotipie, and our happiest memories — all hanging on your wall 😘</p>
+   </div>
+   <div class="photo-wall-wrap" id="photoWall">
+     <div class="photo-wall-board">
+       <article class="wall-panel wall-panel-cutiepie" data-wall-section="cutiepie" hidden>
+         <header class="wall-panel-header">
+           <div>
+             <h3 class="wall-panel-title typing-pending"></h3>
+             <p class="wall-panel-subtitle typing-pending"></p>
+           </div>
+         </header>
+         <div class="wall-photos-grid"></div>
+       </article>
+       <article class="wall-panel wall-panel-hotipie" data-wall-section="hotipie" hidden>
+         <header class="wall-panel-header">
+           <div>
+             <h3 class="wall-panel-title typing-pending"></h3>
+             <p class="wall-panel-subtitle typing-pending"></p>
+           </div>
+         </header>
+         <div class="wall-photos-grid"></div>
+       </article>
+       <article class="wall-panel wall-panel-myhappypie" data-wall-section="myhappypie" hidden>
+         <header class="wall-panel-header">
+           <div>
+             <h3 class="wall-panel-title typing-pending"></h3>
+             <p class="wall-panel-subtitle typing-pending"></p>
+           </div>
+         </header>
+         <div class="wall-photos-grid"></div>
+       </article>
+     </div>
+   </div>
+   <button id="stickerNextBtn" class="primary-btn wall-next-btn" hidden disabled>Ready for your next surprise Kuchupuchu 🤧</button>
+ </section>
+
+ <section id="stage5" class="stage stage-sketch-portrait">
+   <div class="sketch-stage" id="sketchStage">
+     <div class="sketch-theater">
+       <p class="sketch-label">Guess Baby Guess😁</p>
+       <div class="sketch-canvas-wrap">
+         <div class="sketch-sparkle-layer" id="sketchSparkleLayer" aria-hidden="true"></div>
+         <canvas id="sketchCanvas" aria-label="Pencil sketch being colored with pencils"></canvas>
+         <div class="sketch-pencil is-pencil" id="sketchPencil" aria-hidden="true"></div>
+       </div>
+       <p class="sketch-caption typing-pending" id="sketchCaption" data-typewriter-text="Chand se utri hui, kokil kanth si apsara lag rahi ho 🤧🤍" hidden></p>
+       <button type="button" id="sketchNextBtn" class="primary-btn sketch-next-btn" hidden disabled>One Last Surprise for my BabyGirl🤧</button>
+     </div>
+   </div>
+ </section>
+
+ <section id="stage6" class="stage stage-wishes">
+   <div class="wishes-page" id="wishesPage">
+     <div class="wishes-petals" id="wishesPetals" aria-hidden="true"></div>
+     <div class="wishes-particles" id="wishesParticles" aria-hidden="true"></div>
+     <div class="wishes-vignette" aria-hidden="true"></div>
+
+     <div class="wishes-intro" id="wishesIntro">
+       <h1 class="wishes-title typing-pending" id="wishesTitle" data-typewriter-text="🌸 24 Wishes For Your 24th Birthday 🌸"></h1>
+       <div class="wishes-intro-body" id="wishesIntroBody"></div>
+     </div>
+
+     <div class="wishes-garden-wrap" id="wishesGardenWrap" hidden>
+       <div class="wishes-progress">
+         🌸 <span class="wishes-progress-count">0</span> / 24 Wishes Unlocked 🌸
+       </div>
+       <div class="wish-garden" id="wishGarden">
+         <div class="wish-garden-ring" aria-hidden="true"></div>
+         <button type="button" class="wish-heart-center is-locked" id="wishHeartCenter" disabled aria-label="Secret wish locked">❤️</button>
+       </div>
+     </div>
+
+     <div class="wish-modal-backdrop" id="wishModal" hidden role="dialog" aria-modal="true">
+       <div class="wish-modal-card">
+         <p class="wish-modal-label" id="wishModalLabel">Wish 1 of 24</p>
+         <p class="wish-modal-text" id="wishModalText"></p>
+         <button type="button" class="wish-modal-close" id="wishModalClose">Close 🤧</button>
+       </div>
+     </div>
+
+     <div class="wish-secret-overlay" id="wishSecretOverlay" hidden role="dialog" aria-modal="true">
+       <div class="wish-secret-panel">
+         <p class="wish-secret-badge">❤️ Secret Wish Unlocked ❤️</p>
+         <div class="wish-secret-body" id="wishSecretBody"></div>
+         <button type="button" class="wish-secret-continue" id="wishSecretContinue">Continue ❤️</button>
+       </div>
+     </div>
+
+     <div class="wish-ending" id="wishEnding" hidden>
+       <div class="wish-ending-inner">
+         <p class="wish-ending-line1">Thank you for being part of my favorite memories. 🤧💝</p>
+         <p class="wish-ending-line2">The adventure ends here.<br>But your story is only beginning. ❤️✨</p>
+         <div class="wish-stage-nav" id="wishStageNav">
+           <button type="button" class="wish-stage-btn" data-stage="0">🎂 Cake</button>
+           <button type="button" class="wish-stage-btn" data-stage="1">📖 Booklet</button>
+           <button type="button" class="wish-stage-btn" data-stage="2">🤧 Surprise</button>
+           <button type="button" class="wish-stage-btn" data-stage="3">📸 Photo Wall</button>
+           <button type="button" class="wish-stage-btn" data-stage="4">🎨 Portrait</button>
+           <button type="button" class="wish-stage-btn" data-stage="5">🌸 24 Wishes</button>
+         </div>
+         <button type="button" class="wish-replay-btn" id="wishReplayBtn">Replay Adventure ✨</button>
+       </div>
+     </div>
+   </div>
+ </section>
+</div>
+<script src="js/site-audio.js"></script>
+<script src="js/surprise.js"></script>
+<script src="js/photo-wall.js"></script>
+<script src="js/sketch-portrait.js"></script>
+<script src="js/wishes.js"></script>
+<script src="js/app.js"></script>
+<script src="js/debug.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "premium-hero-v2",
+  "private": true,
+  "scripts": {
+    "debug": "live-server . --port=5173 --watch=css,js,index.html --entry-file=index.html"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

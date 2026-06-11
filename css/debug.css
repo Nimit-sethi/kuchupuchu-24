@@ -1,0 +1,13 @@
+body.debug-mode{padding-bottom:72px}
+#debugPanel{position:fixed;left:0;right:0;bottom:0;z-index:9999;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 14px;background:linear-gradient(180deg,rgba(24,12,32,.94),rgba(40,18,48,.98));color:#fff7fb;font:600 12px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;border-top:2px solid #e777c3;box-shadow:0 -8px 30px rgba(0,0,0,.28);backdrop-filter:blur(10px)}
+#debugPanel .debug-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#c2187a;color:#fff;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+#debugPanel .debug-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:#7dffb2;box-shadow:0 0 8px #7dffb2;animation:debugPulse 1.4s ease infinite}
+@keyframes debugPulse{0%,100%{opacity:1}50%{opacity:.45}}
+#debugPanel .debug-group{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+#debugPanel .debug-label{opacity:.72;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+#debugPanel button{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff7fb;border-radius:999px;padding:6px 12px;font:inherit;font-size:12px;cursor:pointer;transition:background .15s ease,transform .15s ease}
+#debugPanel button:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+#debugPanel button.is-active{background:#e777c3;border-color:#e777c3;color:#fff}
+#debugPanel button.debug-reload{background:rgba(125,255,178,.14);border-color:rgba(125,255,178,.45)}
+#debugPanel .debug-status{margin-left:auto;opacity:.65;font-size:11px}
+@media(max-width:700px){#debugPanel .debug-status{width:100%;margin-left:0}}
