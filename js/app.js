@@ -288,6 +288,46 @@ function decoratePageHtml(html, pageIndex) {
   `;
 }
 
+function fitBookPageContent(pageEl) {
+  const content = pageEl?.querySelector('.book-page-content');
+  if (!content) return;
+
+  const isFinal = pageEl.classList.contains('booklet-final');
+  const minFit = isFinal ? 0.9 : 0.72;
+  const maxFit = isFinal ? 1.38 : 1.14;
+  const startFit = isFinal ? 1.24 : 1;
+
+  content.style.setProperty('--page-fit', String(startFit));
+
+  const fit = () => {
+    let scale = startFit;
+    const step = 0.025;
+
+    while (content.scrollHeight > content.clientHeight + 2 && scale > minFit) {
+      scale = Math.max(minFit, scale - step);
+      content.style.setProperty('--page-fit', scale.toFixed(3));
+    }
+
+    while (content.scrollHeight < content.clientHeight * 0.78 && scale < maxFit) {
+      const next = scale + step;
+      content.style.setProperty('--page-fit', next.toFixed(3));
+      if (content.scrollHeight > content.clientHeight + 2) {
+        content.style.setProperty('--page-fit', scale.toFixed(3));
+        break;
+      }
+      scale = next;
+    }
+  };
+
+  requestAnimationFrame(() => requestAnimationFrame(fit));
+}
+
+function fitVisibleFlipbookPages(stage) {
+  if (!stage) return;
+  const pageEls = stage.querySelectorAll('.flipbook-page-left, .flipbook-under, .flipbook-face-front');
+  pageEls.forEach((pageEl) => fitBookPageContent(pageEl));
+}
+
 function initFlipbook(stage) {
   const sourcePages = Array.from(stage.querySelectorAll('.flipbook-pages-source .book-page'));
   flipbookState.pages = sourcePages.map((page) => ({
@@ -381,6 +421,7 @@ function initFlipbook(stage) {
       : 'Click the page or › to turn →';
     updateNextStageBtn(i);
     emitDebugEvent('birthday:flipbookchange');
+    fitVisibleFlipbookPages(stage);
   };
 
   const openBook = async () => {

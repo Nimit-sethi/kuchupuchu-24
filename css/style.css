@@ -166,14 +166,15 @@ body.intro-active .intro-float.sparkle-float{opacity:.92}
 .flipbook-face-back{transform:rotateY(180deg)}
 .page-paper-back{background:linear-gradient(165deg,#fffaf5 0%,#f6ece2 55%,#efe3d8 100%)!important;box-shadow:inset 0 0 40px rgba(210,180,150,.12)}
 .page-paper-back::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 27px,rgba(210,190,170,.14) 28px);pointer-events:none;opacity:.55}
-.book-page,.flipbook-page-left,.flipbook-under,.flipbook-face{font-family:'Caveat',cursive;font-size:1.58rem;line-height:1.52;color:#4a3048}
-.book-page h3,.flipbook-page-left h3,.flipbook-face h3{font-family:'Caveat',cursive;font-size:2.28rem;font-weight:700;margin-bottom:12px;line-height:1.18}
-.book-page ul,.flipbook-face ul{list-style:none;padding:0;margin:0}
-.book-page li,.flipbook-face li{margin-bottom:9px;padding-left:16px;position:relative;font-size:1.52rem;line-height:1.48}
-.book-page li::before,.flipbook-face li::before{content:"♥";position:absolute;left:0;color:#e777c3;font-size:1rem;top:.16rem}
-.book-page p,.flipbook-face p{font-size:1.54rem;line-height:1.52;margin:0 0 10px}
+.book-page,.flipbook-page-left,.flipbook-under,.flipbook-face{font-family:'Caveat',cursive;color:#4a3048}
+.book-page-content{--page-base:1.58rem;--page-fit:1;font-size:calc(var(--page-base) * var(--page-fit));line-height:1.48;flex:1 1 0;min-height:0;overflow:hidden}
+.book-page-content h3{font-family:'Caveat',cursive;font-size:1.44em;font-weight:700;margin-bottom:.55em;line-height:1.16}
+.book-page-content ul{list-style:none;padding:0;margin:0}
+.book-page-content li{margin-bottom:.42em;padding-left:1em;position:relative;font-size:.96em;line-height:1.44}
+.book-page-content li::before{content:"♥";position:absolute;left:0;color:#e777c3;font-size:.68em;top:.18em}
+.book-page-content p{font-size:.97em;line-height:1.46;margin:0 0 .55em}
+.book-page-content .book-page-note{margin-top:.55em;font-size:.94em;font-weight:700;color:#8b4a72;line-height:1.42}
 .book-page-inner{display:flex;flex-direction:column;height:100%;min-height:0;position:relative;z-index:1}
-.book-page-content{flex:1 1 0;min-height:0;overflow:hidden}
 .book-page-art{margin-top:auto;padding-top:10px;display:flex;align-items:flex-end;justify-content:space-between;gap:8px;pointer-events:none;flex-shrink:0;min-height:92px;padding-bottom:2px}
 .book-sticker-mini{width:min(34%,96px);max-height:84px;object-fit:contain;opacity:.92;filter:drop-shadow(0 8px 14px rgba(194,24,122,.12));transform:rotate(-5deg)}
 .book-doodle{font-size:1.4rem;opacity:.75;transform:rotate(8deg)}
@@ -183,7 +184,11 @@ body.intro-active .intro-float.sparkle-float{opacity:.92}
 .book-endpaper{display:grid;place-content:center;text-align:center;gap:14px;height:100%;min-height:220px}
 .book-endpaper-bear{width:min(72%,170px);margin:0 auto;filter:drop-shadow(0 12px 22px rgba(194,24,122,.15))}
 .book-endpaper p{font-size:1.65rem;color:#9b1d52;font-weight:700;margin:0}
-.book-page-note{margin-top:12px;font-size:1.48rem;font-weight:700;color:#8b4a72}
+.book-page-note{margin-top:12px;font-weight:700;color:#8b4a72}
+.booklet-final .book-page-content{--page-fit:1.24}
+.booklet-final .book-page-content p{font-size:1.08em;margin:0 0 .62em}
+.booklet-final .book-page-content .final-quote{font-size:1.38em;font-weight:700;color:#b63d8a;line-height:1.34;margin:.2em 0 .65em}
+.booklet-final .book-page-content .book-page-note{font-size:1.12em;color:#9b1d52;margin-top:.45em}
 .flipbook-help{margin:0;font-size:1.05rem;color:#6d4570;text-align:center;font-weight:600;font-family:'Caveat',cursive}
 .flipbook-footer{display:flex;align-items:center;gap:14px}
 .flipbook-arrow{width:42px;height:42px;border:none;border-radius:50%;background:rgba(255,255,255,.92);color:#9b1d52;font-size:1.6rem;line-height:1;cursor:pointer;box-shadow:0 10px 24px rgba(79,45,99,.12);transition:transform .18s ease,opacity .18s ease}
@@ -219,8 +224,6 @@ body.intro-active .intro-float.sparkle-float{opacity:.92}
 .booklet-card h3{font-size:1.15rem;margin-bottom:14px}
 .booklet-card ul{list-style:none;padding-left:0}
 .booklet-card li{margin-bottom:10px;font-size:.96rem;line-height:1.75}
-.booklet-final p{margin:0 0 14px;font-size:1rem}
-.final-quote{font-size:1.2rem;font-weight:700;color:#b63d8a}
 .video-grid, .sticker-grid{display:grid;gap:20px}
 .video-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .video-card{background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 20px 45px rgba(108,62,114,.12);border:1px solid rgba(255,255,255,.8);display:flex;flex-direction:column;transition:transform .25s ease}
@@ -245,5 +248,5 @@ button{font-family:inherit}
 .typing-active::after{content:"";display:inline-block;width:2px;height:1em;margin-left:3px;background:currentColor;vertical-align:-.12em;animation:typeBlink .72s steps(1) infinite}
 @keyframes typeBlink{50%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.typing-active::after{display:none}}
-@media(max-width:900px){.painting-stage{grid-template-columns:1fr}.hero-stats{flex-direction:column}.booklet-grid,.video-grid,.sticker-grid{grid-template-columns:1fr}.flipbook-stage{width:min(100%,720px);height:clamp(480px,62vh,580px);min-height:480px}.flipbook-spiral{width:28px}.spiral-coil{background-size:28px 24px}.book-page,.flipbook-page-left,.flipbook-under,.flipbook-face{font-size:1.38rem}.book-page h3,.flipbook-page-left h3,.flipbook-face h3{font-size:1.95rem}.book-page li,.flipbook-face li{font-size:1.32rem}.book-sticker-mini{width:min(36%,88px);max-height:76px}.cake-zone{height:380px}.photo-cake-scene{height:300px}.cake-blow-panel{bottom:14px;padding:10px 14px}}
+@media(max-width:900px){.painting-stage{grid-template-columns:1fr}.hero-stats{flex-direction:column}.booklet-grid,.video-grid,.sticker-grid{grid-template-columns:1fr}.flipbook-stage{width:min(100%,720px);height:clamp(480px,62vh,580px);min-height:480px}.flipbook-spiral{width:28px}.spiral-coil{background-size:28px 24px}.book-page-content{--page-base:1.38rem}.booklet-final .book-page-content{--page-fit:1.16}.book-sticker-mini{width:min(36%,88px);max-height:76px}.cake-zone{height:380px}.photo-cake-scene{height:300px}.cake-blow-panel{bottom:14px;padding:10px 14px}}
 @media(max-width:640px){.intro-card{padding:28px}.stage-intro h1,.stage-intro h2{font-size:2.4rem}.hero-stats div{padding:16px}.page-shell{padding:18px}}
