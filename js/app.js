@@ -38,6 +38,15 @@ let cutProgress = 0;
 let cakeAssembly = null;
 let cakeCutSlot = null;
 let cakeKnife = null;
+let candleBlown = false;
+let blowMicStream = null;
+let blowAnalyser = null;
+let blowMonitorFrame = null;
+let blowStreak = 0;
+let cakeMicBtn = null;
+let cakeBlowStatus = null;
+let candleFlame = null;
+const CAKE_IMAGE_SRC = 'assets/cake.png';
 
 let noButtonGone = false;
 let noButtonClicks = 0;
@@ -140,6 +149,9 @@ function showStage(index, options = {}) {
     }
     if (stages[prevIndex]?.querySelector('#wishesPage')) {
       window.BirthdayWishes?.resetWishesStage?.(stages[prevIndex]);
+    }
+    if (stages[prevIndex]?.querySelector('#cakeContainer')) {
+      stopBlowMonitor();
     }
   }
   const fastDebug = options.debug || isDebugMode();
@@ -769,6 +781,128 @@ function typeElement(element, replacementText, reveal = false) {
 
 Object.assign(window.BirthdayApp, { typeElement, delay });
 
+function stopBlowMonitor() {
+  if (blowMonitorFrame) {
+    cancelAnimationFrame(blowMonitorFrame);
+    blowMonitorFrame = null;
+  }
+  blowMicStream?.getTracks().forEach((track) => track.stop());
+  blowMicStream = null;
+  blowAnalyser = null;
+}
+
+async function startBlowMonitor() {
+  if (candleBlown || blowMicStream) return;
+  unlockAudio();
+
+  if (cakeBlowStatus) {
+    cakeBlowStatus.textContent = 'Mic on — blow toward your device to put out the candle 🎤';
+  }
+
+  try {
+    blowMicStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false
+      }
+    });
+  } catch {
+    if (cakeBlowStatus) {
+      cakeBlowStatus.textContent = 'Mic blocked — tap below to blow the candle instead 🤧';
+    }
+    if (cakeMicBtn) {
+      cakeMicBtn.hidden = false;
+      cakeMicBtn.textContent = 'Tap to blow 🕯️';
+      cakeMicBtn.onclick = () => extinguishCandle();
+    }
+    return;
+  }
+
+  const audioContextForMic = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+  if (audioContextForMic.state === 'suspended') await audioContextForMic.resume();
+
+  const source = audioContextForMic.createMediaStreamSource(blowMicStream);
+  blowAnalyser = audioContextForMic.createAnalyser();
+  blowAnalyser.fftSize = 2048;
+  blowAnalyser.smoothingTimeConstant = 0.35;
+  source.connect(blowAnalyser);
+
+  if (cakeMicBtn) {
+    cakeMicBtn.hidden = true;
+  }
+  if (cakeBlowStatus) {
+    cakeBlowStatus.textContent = 'Listening… blow now 💨';
+  }
+
+  const timeData = new Uint8Array(blowAnalyser.fftSize);
+  const freqData = new Uint8Array(blowAnalyser.frequencyBinCount);
+  let baseline = 0.02;
+  let baselineSamples = 0;
+
+  const monitor = () => {
+    if (!blowAnalyser || candleBlown) return;
+
+    blowAnalyser.getByteTimeDomainData(timeData);
+    blowAnalyser.getByteFrequencyData(freqData);
+
+    let sum = 0;
+    for (let i = 0; i < timeData.length; i += 1) {
+      const sample = (timeData[i] - 128) / 128;
+      sum += sample * sample;
+    }
+    const rms = Math.sqrt(sum / timeData.length);
+
+    let lowBand = 0;
+    for (let i = 2; i < 24; i += 1) lowBand += freqData[i];
+    lowBand /= 22;
+
+    if (baselineSamples < 40) {
+      baseline = baseline * 0.92 + rms * 0.08;
+      baselineSamples += 1;
+    }
+
+    const loudEnough = rms > Math.max(0.11, baseline * 2.8);
+    const windyEnough = lowBand > 18;
+    if (loudEnough && windyEnough) blowStreak += 1;
+    else blowStreak = Math.max(0, blowStreak - 1);
+
+    if (blowStreak >= 7) {
+      extinguishCandle();
+      return;
+    }
+
+    blowMonitorFrame = requestAnimationFrame(monitor);
+  };
+
+  blowMonitorFrame = requestAnimationFrame(monitor);
+}
+
+function extinguishCandle() {
+  if (candleBlown) return;
+  candleBlown = true;
+  stopBlowMonitor();
+
+  candleFlame?.classList.add('is-out');
+  cakeContainer?.querySelector('.candle-smoke')?.classList.add('is-active');
+
+  if (cakeMicBtn) {
+    cakeMicBtn.hidden = true;
+  }
+  if (cakeBlowStatus) {
+    cakeBlowStatus.textContent = 'Candle blown! Ab knife se cake cut karo 🔪';
+  }
+
+  cakeContainer?.classList.remove('awaiting-blow');
+  cakeContainer?.classList.add('is-ready-cut');
+
+  const hint = document.querySelector('.cake-hint');
+  if (hint) typeElement(hint, 'Ab knife se ek smooth cut maaro across the cake, Cutieeeeeeeee😙');
+
+  playTone(420, 0.08, 'sine', 0.04);
+  playTone(280, 0.12, 'sine', 0.03, 0.04);
+}
+
 function resetCakeCutState() {
   cutComplete = false;
   cutProgress = 0;
@@ -778,6 +912,14 @@ function resetCakeCutState() {
   dragCurrent = null;
   cutTrail?.remove();
   cutTrail = null;
+  stopBlowMonitor();
+  candleBlown = false;
+  blowStreak = 0;
+
+  if (cakeContainer) {
+    cakeContainer.classList.add('awaiting-blow');
+    cakeContainer.classList.remove('is-ready-cut');
+  }
 
   if (cakeAssembly) {
     cakeAssembly.classList.remove('is-cut');
@@ -787,74 +929,83 @@ function resetCakeCutState() {
     cakeCutSlot.style.opacity = '0';
     cakeCutSlot.style.transform = 'translateX(-50%) scaleY(0.2)';
   }
+  if (candleFlame) {
+    candleFlame.classList.remove('is-out');
+  }
+  cakeContainer?.querySelector('.candle-smoke')?.classList.remove('is-active');
+  if (cakeMicBtn) {
+    cakeMicBtn.hidden = true;
+    cakeMicBtn.textContent = 'Tap to blow 🕯️';
+  }
+  if (cakeBlowStatus) {
+    cakeBlowStatus.textContent = 'Blow into your mic to put out the candle 🕯️';
+  }
+  scheduleBlowMonitor();
+}
+
+function scheduleBlowMonitor() {
+  if (candleBlown || blowMicStream) return;
+  setTimeout(() => startBlowMonitor(), 400);
 }
 
 function initializeCake() {
   if (!cakeContainer || cakeInitialized) return;
   cakeInitialized = true;
 
+  cakeContainer.classList.add('awaiting-blow');
   cakeContainer.innerHTML = `
     <div id="knifePointer" class="knife-pointer">🔪</div>
-    <div class="illustrated-cake-scene">
-      <div class="cake-plate"></div>
+    <div class="photo-cake-scene">
+      <div class="cake-spotlight" aria-hidden="true"></div>
+      <div class="cake-stand" aria-hidden="true"></div>
       <div class="cake-assembly" id="cakeAssembly">
         <div class="cake-half cake-half-left">
-          <div class="cake-body">
-            <div class="cake-side">
-              <span class="layer-band"></span>
-              <span class="layer-band"></span>
-              <span class="layer-band"></span>
-            </div>
-            <div class="cake-top">
-              <div class="frosting-cap"></div>
-              <span class="frosting-drip drip-a"></span>
-              <span class="frosting-drip drip-b"></span>
-              <span class="frosting-drip drip-c"></span>
-            </div>
-            <div class="cake-cross-section"></div>
-          </div>
-          <div class="cake-toppings">
-            <span class="strawberry berry-1"></span>
-            <span class="strawberry berry-2"></span>
-          </div>
+          <img class="cake-photo" src="${CAKE_IMAGE_SRC}" alt="Birthday cake">
         </div>
         <div class="cake-half cake-half-right">
-          <div class="cake-body">
-            <div class="cake-side">
-              <span class="layer-band"></span>
-              <span class="layer-band"></span>
-              <span class="layer-band"></span>
-            </div>
-            <div class="cake-top">
-              <div class="frosting-cap"></div>
-              <span class="frosting-drip drip-d"></span>
-              <span class="frosting-drip drip-e"></span>
-            </div>
-            <div class="cake-cross-section"></div>
-          </div>
-          <div class="cake-toppings">
-            <span class="strawberry berry-3"></span>
-            <span class="strawberry berry-4"></span>
-            <span class="cake-candle">
-              <i class="candle-stick"></i>
-              <i class="candle-flame"></i>
-            </span>
-          </div>
+          <img class="cake-photo" src="${CAKE_IMAGE_SRC}" alt="">
         </div>
         <div class="cake-cut-slot" id="cakeCutSlot"></div>
+        <div class="cake-candle-layer" id="cakeCandleLayer">
+          <span class="cake-candle">
+            <span class="candle-smoke" aria-hidden="true"><span></span><span></span><span></span></span>
+            <i class="candle-flame" id="candleFlame"></i>
+            <i class="candle-stick"></i>
+          </span>
+        </div>
       </div>
       <div class="cake-crumb-layer" id="cakeCrumbLayer"></div>
+    </div>
+    <div class="cake-blow-panel" id="cakeBlowPanel">
+      <p class="cake-blow-status" id="cakeBlowStatus">Starting mic… get ready to blow 🎤</p>
+      <button type="button" id="cakeMicBtn" class="cake-mic-btn cake-mic-fallback" hidden>Tap to blow 🕯️</button>
     </div>
   `;
 
   cakeKnife = cakeContainer.querySelector('#knifePointer');
   cakeAssembly = cakeContainer.querySelector('#cakeAssembly');
   cakeCutSlot = cakeContainer.querySelector('#cakeCutSlot');
+  cakeMicBtn = cakeContainer.querySelector('#cakeMicBtn');
+  cakeBlowStatus = cakeContainer.querySelector('#cakeBlowStatus');
+  candleFlame = cakeContainer.querySelector('#candleFlame');
+
+  cakeMicBtn?.addEventListener('click', () => {
+    if (!candleBlown) extinguishCandle();
+  });
 
   cakeContainer.addEventListener('pointermove', onPointerMove);
-  cakeContainer.addEventListener('pointerdown', onKnifeDown);
+  cakeContainer.addEventListener('pointerdown', onCakePointerDown);
   cakeContainer.addEventListener('pointerup', onKnifeUp);
   cakeContainer.addEventListener('pointerleave', onKnifeUp);
+
+  scheduleBlowMonitor();
+}
+
+function onCakePointerDown(event) {
+  if (!candleBlown && !blowMicStream) {
+    startBlowMonitor();
+  }
+  onKnifeDown(event);
 }
 
 function getCakeBounds() {
@@ -870,9 +1021,9 @@ function getCakeBounds() {
   }
   return {
     cx: assembly.left - container.left + assembly.width / 2,
-    cy: assembly.top - container.top + assembly.height * 0.52,
-    rx: assembly.width * 0.34,
-    ry: assembly.height * 0.28
+    cy: assembly.top - container.top + assembly.height * 0.48,
+    rx: assembly.width * 0.32,
+    ry: assembly.height * 0.26
   };
 }
 
@@ -881,19 +1032,20 @@ function onPointerMove(event) {
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
 
-  if (cakeKnife) {
+  if (cakeKnife && candleBlown) {
     cakeKnife.style.left = `${x}px`;
     cakeKnife.style.top = `${y}px`;
     cakeKnife.classList.toggle('cutting', isDraggingKnife);
   }
 
-  if (!isDraggingKnife || !dragStart || cutComplete) return;
+  if (!isDraggingKnife || !dragStart || cutComplete || !candleBlown) return;
   dragCurrent = { x, y, clientX: event.clientX, clientY: event.clientY };
   updateCutTrail();
   updateLiveCutProgress();
 }
 
 function onKnifeDown(event) {
+  if (!candleBlown) return;
   unlockAudio();
   window.SiteAudio?.startBgm?.();
   if (cutComplete) return;
@@ -1026,7 +1178,7 @@ function performCakeCut(clientX, clientY) {
 function spawnCakeCrumbs() {
   const layer = cakeContainer.querySelector('#cakeCrumbLayer');
   if (!layer) return;
-  const colors = ['#5a2b1f', '#6e3425', '#fff0d8', '#e5224f', '#f5f1e6'];
+  const colors = ['#5a2b1f', '#6e3425', '#fff0d8', '#3d2018', '#f5f1e6'];
 
   for (let i = 0; i < 28; i += 1) {
     const crumb = document.createElement('span');
